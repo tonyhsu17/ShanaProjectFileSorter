@@ -1,10 +1,12 @@
 [![Release](https://jitpack.io/v/tonyhsu17/ShanaProjectFileShorter.svg)](https://jitpack.io/#tonyhsu17/ShanaProjectFileShorter)
-# Helpful Utilities
+# ShanaProject File Sorter
 Sorts anime files into Season Year/Series based on your followed list on ShanaProject.  
 If file's name does not match listing on Shanaproject, renaming the series' folder will allow subsequent files to be moved to appropriate folder. 
 
-Files unable to be sorted into the proper folder will be copied into "Unknown" folder.
-A history log file will be generated in destination to keep track of files copied.
+Files unable to be sorted into the proper folder will be copied into "Unknown" folder.  
+A history log file will be generated in destination to keep track of files copied.  
+
+Planned task, utilize other files within folders for sorting and utilize other db sites for alternative names for sorting.
 
 ## How to use
 ```
@@ -12,7 +14,7 @@ A history log file will be generated in destination to keep track of files copie
 -d <path> | destination path
 -u <url>  | shanaproject url
 -t        | refresh time
--once     | run a single time (overrides -t)
+-once     | run once (overrides -t)
 ```
 ```
 ShanaProjectFileOrganizer runner = new ShanaProjectFileOrganizer(args);

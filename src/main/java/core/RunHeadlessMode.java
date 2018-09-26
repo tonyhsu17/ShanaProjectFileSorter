@@ -51,6 +51,7 @@ public class RunHeadlessMode implements Logger {
      * Initializes each Series folder. WIll not recreate the folder if it exist in history. Meaning
      * folder was already deleted.
      * 
+     * @return List of paths for each series
      * @throws IOException
      */
     private void initFolders() throws IOException {
@@ -65,6 +66,7 @@ public class RunHeadlessMode implements Logger {
                 // for each series, sanitize bad file characters
                 String sanitizedName = ser.getSeries().replaceAll("[/\\:*?\"<>|]*", "");
                 String seriesPath = Paths.get(seasonPath, sanitizedName).toString();
+
                 // if series folder is not in history, create folders and save to history
                 if(!history.isInHistory(sanitizedName)) {
                     seriesFolder = new File(seriesPath);
@@ -120,35 +122,38 @@ public class RunHeadlessMode implements Logger {
     private String getFolderForName(String fileName) throws IOException {
         String returnVal = "";
         fileName = fileName.replaceAll(SPACING_REGEX, "");
-        for(Entry<String, String> entry : seriesToFolder.entrySet()) {
-            if(fileName.contains(entry.getKey())) {
-                returnVal = entry.getValue();
+
+        // check local folders
+        List<File> folders = new ArrayList<File>();
+        // recurse through all folders and get folders
+        Files.walkFileTree(new File(des).toPath(), new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attributes) throws IOException {
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                folders.add(dir.toFile());
+                return FileVisitResult.CONTINUE;
+            }
+        });
+        for(File f : folders) {
+            if(fileName.contains(f.getName().replaceAll(SPACING_REGEX, ""))) {
+                returnVal = f.getPath();
             }
         }
-        // if none found from shanaproject, check local folders
+
+        // if no folder found locally, refresh shanaproject follows for possible new seasons.
         if(returnVal.isEmpty()) {
             initFolders(); // get shanaproject to see if there is something new
-
-            List<File> folders = new ArrayList<File>();
-            // recurse through all folders and get folders
-            Files.walkFileTree(new File(des).toPath(), new SimpleFileVisitor<Path>() {
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attributes) throws IOException {
-                    return FileVisitResult.CONTINUE;
-                }
-
-                @Override
-                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-                    folders.add(dir.toFile());
-                    return FileVisitResult.CONTINUE;
-                }
-            });
-            for(File f : folders) {
-                if(fileName.contains(f.getName().replaceAll(SPACING_REGEX, ""))) {
-                    returnVal = f.getPath();
+            for(Entry<String, String> entry : seriesToFolder.entrySet()) {
+                if(fileName.contains(entry.getKey())) {
+                    returnVal = entry.getValue();
                 }
             }
         }
+
         return returnVal;
     }
 
