@@ -19,6 +19,10 @@ public class ShanaProjectFileSorter implements Logger {
     private RunHeadlessMode headless;
     private int cronTime;
     private boolean runOnce;
+    
+    public static void main(String[] args) throws NumberFormatException, IOException, ParseException {
+        new ShanaProjectFileSorter(args).run(); 
+    }
 
     /**
      * Sorts anime files into Season Year/Series based on your followed list on ShanaProject.
