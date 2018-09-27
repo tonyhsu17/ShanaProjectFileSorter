@@ -41,7 +41,7 @@
   <dependency>
    <groupId>com.github.tonyhsu17</groupId>
    <artifactId>HelpfulUtitlies</artifactId>
-   <version>1.2</version>
+   <version>1.3b</version>
   </dependency>
   <dependency>
    <groupId>org.testng</groupId>

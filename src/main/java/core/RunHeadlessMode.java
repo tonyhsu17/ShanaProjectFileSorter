@@ -71,12 +71,12 @@ public class RunHeadlessMode implements Logger {
                 if(!history.isInHistory(sanitizedName)) {
                     seriesFolder = new File(seriesPath);
                     seriesFolder.mkdirs();
-                    history.addToWriteList(sanitizedName);
+                    history.add(sanitizedName);
                 }
                 seriesToFolder.put(sanitizedName.replaceAll(SPACING_REGEX, ""), seriesPath);
             }
         }
-        history.writeToFile();
+        history.save();
         new File(unknownPath).mkdirs();
     }
 
@@ -103,13 +103,13 @@ public class RunHeadlessMode implements Logger {
             try {
                 info("Copying: " + file.getPath() + " to: " + desPath);
                 Files.copy(Paths.get(file.getPath()), Paths.get(desPath), StandardCopyOption.REPLACE_EXISTING);
-                history.addToWriteList(file.getName(), file.lastModified());
+                history.add(file.getName(), file.lastModified()+"");
             }
             catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        history.writeToFile();
+        history.save();
     }
 
     /**
