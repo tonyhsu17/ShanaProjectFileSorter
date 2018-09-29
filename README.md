@@ -1,4 +1,4 @@
-[![Release](https://jitpack.io/v/tonyhsu17/ShanaProjectFileShorter.svg)](https://jitpack.io/#tonyhsu17/ShanaProjectFileShorter)
+[![Release](https://jitpack.io/v/tonyhsu17/ShanaProjectFileSorter.svg)](https://jitpack.io/#tonyhsu17/ShanaProjectFileSorter)
 # ShanaProject File Sorter
 Sorts anime files into Season Year/Series based on your followed list on ShanaProject.  
 If file's name does not match listing on Shanaproject, renaming the series' folder will allow subsequent files to be moved to appropriate folder. 
