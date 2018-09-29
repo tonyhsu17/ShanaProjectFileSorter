@@ -1,4 +1,4 @@
-package core;
+package org.tonyhsu17;
 
 import org.tonyhsu17.utilities.commandline.Parameter;
 

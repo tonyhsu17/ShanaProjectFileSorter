@@ -15,8 +15,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
-
-import core.RunHeadlessMode;
+import org.tonyhsu17.RunHeadlessMode;
 
 
 /**
