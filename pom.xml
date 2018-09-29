@@ -23,7 +23,7 @@
     <configuration>
      <archive>
       <manifest>
-       <mainClass>core.ShanaProjectFileSorter</mainClass>
+       <mainClass>org.tonyhsu17.ShanaProjectFileSorter</mainClass>
       </manifest>
      </archive>
      <descriptorRefs>
