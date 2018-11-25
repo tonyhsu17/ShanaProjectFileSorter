@@ -11,9 +11,12 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 import org.tonyhsu17.shanaProjectParser.ShanaProjectParser;
 import org.tonyhsu17.shanaProjectParser.poms.Season;
@@ -87,7 +90,7 @@ public class RunHeadlessMode implements Logger {
      */
     private void copy() throws IOException {
         File srcFolder = new File(src);
-        for(File file : srcFolder.listFiles()) {
+        for(File file : getAllFiles(srcFolder)) {
             if(file.isDirectory() || history.isInHistory(file.getName(), file.lastModified())) {
                 continue;
             }
@@ -164,5 +167,25 @@ public class RunHeadlessMode implements Logger {
      */
     public String getHistoryLogName() {
         return history.getName();
+    }
+    
+    /**
+     * Returns list of files including sub directories.
+     * 
+     * @return List of all files
+     */
+    private List<File> getAllFiles(File root) {
+    	List<File> allFiles = new ArrayList<File>();
+    	Queue<File> workingSet = new PriorityQueue<File>();
+    	workingSet.add(root);
+    	while(!workingSet.isEmpty()) {
+    		File file = workingSet.remove();
+    		if(file.isDirectory()) {
+    			workingSet.addAll(Arrays.asList(file.listFiles()));
+    		} else {
+    			allFiles.add(file);
+    		}
+    	}
+    	return allFiles;
     }
 }
