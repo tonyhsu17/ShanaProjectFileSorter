@@ -1,14 +1,14 @@
 package org.tonyhsu17;
 
+import org.tonyhsu17.shanaProjectParser.ShanaProjectParser;
+import org.tonyhsu17.shanaProjectParser.poms.Season;
+import org.tonyhsu17.shanaProjectParser.poms.SeriesInfo;
+import org.tonyhsu17.utilities.HistoryLog;
+import org.tonyhsu17.utilities.Logger;
+
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,12 +17,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.Queue;
-
-import org.tonyhsu17.shanaProjectParser.ShanaProjectParser;
-import org.tonyhsu17.shanaProjectParser.poms.Season;
-import org.tonyhsu17.shanaProjectParser.poms.SeriesInfo;
-import org.tonyhsu17.utilities.HistoryLog;
-import org.tonyhsu17.utilities.Logger;
 
 
 
@@ -37,12 +31,20 @@ public class RunHeadlessMode implements Logger {
     private HistoryLog history;
 
     public RunHeadlessMode(String src, String des, String url) throws IOException {
+        this(src, des, url, -1);
+    }
+
+    public RunHeadlessMode(String src, String des, String url, int logSize) throws IOException {
         this.src = src;
         this.des = des;
         this.url = url;
         seriesToFolder = new Hashtable<String, String>();
         unknownPath = des + File.separator + "Unknown";
-        history = new HistoryLog(des);
+        if(logSize == -1) {
+            history = new HistoryLog(des);
+        } else {
+            history = new HistoryLog(des, logSize);
+        }
         initFolders();
     }
 

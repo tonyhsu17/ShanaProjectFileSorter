@@ -1,11 +1,11 @@
 package org.tonyhsu17;
 
-import java.io.IOException;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.tonyhsu17.utilities.Logger;
 import org.tonyhsu17.utilities.commandline.CommandLineArgs;
+
+import java.io.IOException;
 
 
 
@@ -20,7 +20,7 @@ public class ShanaProjectFileSorter implements Logger {
     private int cronTime;
     private boolean runOnce;
     
-    public static void main(String[] args) throws NumberFormatException, IOException, ParseException {
+    public static void main(String[] args) throws IOException {
         new ShanaProjectFileSorter(args).run(); 
     }
 
@@ -32,29 +32,34 @@ public class ShanaProjectFileSorter implements Logger {
      * @throws IOException
      * @throws ParseException
      */
-    public ShanaProjectFileSorter(String[] args) throws NumberFormatException, IOException, ParseException {
+    public ShanaProjectFileSorter(String[] args) throws IOException  {
         runOnce = false;
         cronTime = 0;
-        CommandLine cmd = CommandLineArgs.getCommandLine(Params.getParams(), args);
+        CommandLine cmd;
+        try {
+            cmd = CommandLineArgs.getCommandLine(Params.params, args);
+            if(cmd.hasOption(Params.S.opt()) &&
+               cmd.hasOption(Params.D.opt()) &&
+               cmd.hasOption(Params.U.opt())) {
+                headless = new RunHeadlessMode(cmd.getOptionValue(Params.S.opt()),
+                    cmd.getOptionValue(Params.D.opt()),
+                    cmd.getOptionValue(Params.U.opt()));
+            }
 
-        if(cmd.hasOption(Params.S.opt()) &&
-           cmd.hasOption(Params.D.opt()) &&
-           cmd.hasOption(Params.U.opt())) {
-            headless = new RunHeadlessMode(cmd.getOptionValue(Params.S.opt()),
-                cmd.getOptionValue(Params.D.opt()),
-                cmd.getOptionValue(Params.U.opt()));
-        }
+            info("Running...");
+            if(cmd.hasOption(Params.ONCE.opt())) {
+                runOnce = true;
+            }
+            else if(cmd.hasOption(Params.T.opt())) {
+                cronTime = Integer.parseInt(cmd.getOptionValue(Params.T.opt())) * 1000 * 60;
+            }
+            else {
+                error("Failed to provide -t or -once");
 
-        info("Running...");
-        if(cmd.hasOption(Params.ONCE.opt())) {
-            runOnce = true;
-        }
-        else if(cmd.hasOption(Params.T.opt())) {
-            cronTime = Integer.parseInt(cmd.getOptionValue(Params.T.opt())) * 1000 * 60;
-        }
-        else {
-            error("Failed to provide -t or -once");
-            System.exit(0);
+                System.exit(0);
+            }
+        } catch (ParseException | NumberFormatException e) {
+            CommandLineArgs.printHelp("ShanaProjectFileSorter.java", Params.params);
         }
     }
 
