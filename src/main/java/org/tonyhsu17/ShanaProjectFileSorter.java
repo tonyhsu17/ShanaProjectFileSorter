@@ -4,8 +4,10 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.tonyhsu17.utilities.Logger;
 import org.tonyhsu17.utilities.commandline.CommandLineArgs;
+import org.tonyhsu17.utilities.commandline.Parameter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 
 
@@ -38,12 +40,13 @@ public class ShanaProjectFileSorter implements Logger {
         CommandLine cmd;
         try {
             cmd = CommandLineArgs.getCommandLine(Params.params, args);
-            if(cmd.hasOption(Params.S.opt()) &&
-               cmd.hasOption(Params.D.opt()) &&
-               cmd.hasOption(Params.U.opt())) {
+            if(hasOption(cmd, Params.S) &&
+               hasOption(cmd, Params.D) &&
+               hasOption(cmd, Params.U)) {
                 headless = new RunHeadlessMode(cmd.getOptionValue(Params.S.opt()),
                     cmd.getOptionValue(Params.D.opt()),
-                    cmd.getOptionValue(Params.U.opt()));
+                    cmd.getOptionValue(Params.U.opt()),
+                    hasOption(cmd, Params.SIZE) ? Optional.ofNullable(Integer.valueOf(getOptionValue(cmd, Params.SIZE))).orElse(-1) : -1);
             }
 
             info("Running...");
@@ -62,6 +65,20 @@ public class ShanaProjectFileSorter implements Logger {
             CommandLineArgs.printHelp("ShanaProjectFileSorter.java", Params.params);
         }
     }
+
+    public static boolean hasOption(CommandLine line, Parameter param) {
+        return line.hasOption(param.opt()) || line.hasOption(param.longOpt());
+    }
+
+    public static String getOptionValue(CommandLine line, Parameter param) {
+        String value = line.getOptionValue(param.opt());
+        if(value != null) {
+            return value;
+        } else {
+            return line.getOptionValue(param.longOpt());
+        }
+    }
+
 
     /**
      * Starts the file sorting.
