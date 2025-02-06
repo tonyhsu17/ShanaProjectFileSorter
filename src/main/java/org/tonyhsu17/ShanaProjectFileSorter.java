@@ -40,7 +40,8 @@ public class ShanaProjectFileSorter implements Logger {
             String url = getOptionValue(cmd, Params.U, "SP_URL", "");
             String src = getOptionValue(cmd, Params.S, "SP_SRC", "");
             String dest = getOptionValue(cmd, Params.D, "SP_DES", "");
-            hasCron = !cmd.hasOption(Params.ONCE.opt()) || Boolean.parseBoolean(getOptionValue(null, null, "SP_USE_CRON", "false"));
+            hasCron = !cmd.hasOption(Params.ONCE.opt()) || Boolean.parseBoolean(
+                Optional.ofNullable(System.getenv("SP_USE_CRON")).orElse("false"));
             cronInterval = Integer.parseInt(getOptionValue(cmd, Params.T, "SP_CRON_INTERVAL", "10"));
             int logSize = Integer.parseInt(getOptionValue(cmd, Params.SIZE, "SP_LOG_SIZE", "1000000"));
             info("Url="+url + ", src="+src + ", des="+dest);
