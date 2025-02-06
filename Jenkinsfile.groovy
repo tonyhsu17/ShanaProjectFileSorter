@@ -16,7 +16,7 @@ node('maven') {
         def containerName = sh script: 'mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout', returnStdout: true
         def version = sh script: 'mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true
 
-        sh "docker build -t ${repoName}/${containerName}:${version} --build-arg JAR_NAME=${containerName} --build-arg VERSION=${version}."
+        sh "docker build -t ${repoName}/${containerName}:${version} --build-arg JAR_NAME=${containerName} --build-arg VERSION=${version} ."
         sh "docker run ${repoName}/${containerName}:${version}"
         sh "docker push ${repoName}/${containerName}:${version}"
         try {
