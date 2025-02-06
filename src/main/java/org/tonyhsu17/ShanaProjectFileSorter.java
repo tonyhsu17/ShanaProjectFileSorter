@@ -40,23 +40,35 @@ public class ShanaProjectFileSorter implements Logger {
             String url = getOptionValue(cmd, Params.U, "SP_URL", "");
             String src = getOptionValue(cmd, Params.S, "SP_SRC", "");
             String dest = getOptionValue(cmd, Params.D, "SP_DES", "");
-            hasCron = !cmd.hasOption(Params.ONCE.opt()) || Boolean.parseBoolean(getOptionValue(cmd, Params.VERBOSE, "RSS_USE_CRON", "false"));
+            hasCron = !cmd.hasOption(Params.ONCE.opt()) || Boolean.parseBoolean(getOptionValue(cmd, Params.VERBOSE, "SP_USE_CRON", "false"));
             cronInterval = Integer.parseInt(getOptionValue(cmd, Params.T, "SP_CRON_INTERVAL", "10"));
             int logSize = Integer.parseInt(getOptionValue(cmd, Params.SIZE, "SP_LOG_SIZE", "1000000"));
-
+            info("Url="+url + ", src="+src + ", des="+dest);
             if(!url.isEmpty() && !src.isEmpty() && !dest.isEmpty()) {
                 headless = new RunHeadlessMode(src, dest, url, logSize);
             }
         } catch (ParseException | NumberFormatException e) {
-            CommandLineArgs.printHelp("ShanaProjectFileSorter.java", Params.params);
+            CommandLineArgs.printHelp("shana-proj-file-sorter.jar", Params.params);
             System.exit(0);
         }
     }
 
-    public static String getOptionValue(CommandLine cmd, Parameter param, String sysEnvKey, String defaultValue) {
-        return Optional.ofNullable(cmd.getOptionValue(param.opt())).
-            orElse(Optional.ofNullable(cmd.getOptionValue(param.longOpt()))
-                .orElse(Optional.ofNullable(System.getenv(sysEnvKey)).orElse(defaultValue)));
+    public String getOptionValue(CommandLine cmd, Parameter param, String sysEnvKey, String defaultValue) {
+        String val = null;
+        if(cmd.hasOption(param.opt())) {
+            info("Using arg["+param.opt()+"]");
+            val = cmd.getOptionValue(param.opt());
+        } else if(cmd.hasOption(param.longOpt())) {
+            info("Using arg["+param.longOpt()+"]");
+            val = cmd.getOptionValue(param.longOpt());
+        } else if(System.getenv(sysEnvKey) != null) {
+            info("Using env["+sysEnvKey+"]");
+            val = System.getenv(sysEnvKey);
+        } else if(defaultValue != null) {
+            info("Using default value");
+            val = defaultValue;
+        }
+        return val;
     }
 
     /**
