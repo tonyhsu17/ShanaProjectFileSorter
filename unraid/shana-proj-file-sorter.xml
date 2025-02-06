@@ -12,7 +12,7 @@
     <Overview>Download files through rss feed</Overview>
     <Category>HomeAutomation</Category>
     <WebUI/>
-    <TemplateURL>https://raw.githubusercontent.com/tonyhsu17/ShanaProjectFileSorter/refs/heads/dockerize/unraid/shana-proj-file-sorter.xml</TemplateURL>
+    <TemplateURL>https://raw.githubusercontent.com/tonyhsu17/ShanaProjectFileSorter/refs/heads/master/unraid/shana-proj-file-sorter.xml</TemplateURL>
     <Icon>https://cdn.myanimelist.net/images/characters/5/68310.jpg</Icon>
     <ExtraParams/>
     <PostArgs/>
