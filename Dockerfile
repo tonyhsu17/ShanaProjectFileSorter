@@ -1,6 +1,6 @@
 FROM docker.io/maven:eclipse-temurin AS builder
 WORKDIR /app
-COPY src/main ./src/main
+COPY src/ ./src/
 COPY pom.xml .
 RUN mvn clean compile assembly:single
 
