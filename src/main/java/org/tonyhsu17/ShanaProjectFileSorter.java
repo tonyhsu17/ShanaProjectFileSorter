@@ -21,7 +21,7 @@ public class ShanaProjectFileSorter implements Logger {
     private int cronInterval;
     private boolean hasCron;
 
-    public static void main(String[] args) throws IOException, ParseException {
+    public static void main(String[] args) throws IOException {
         new ShanaProjectFileSorter(args).run();
     }
 
@@ -33,7 +33,7 @@ public class ShanaProjectFileSorter implements Logger {
      * @throws IOException
      * @throws ParseException
      */
-    public ShanaProjectFileSorter(String[] args) throws IOException, ParseException {
+    public ShanaProjectFileSorter(String[] args) throws IOException {
         try {
             CommandLine cmd = CommandLineArgs.getCommandLine(Params.params, args);
             String url = getOptionValue(cmd, Params.U, "SP_URL", "");
