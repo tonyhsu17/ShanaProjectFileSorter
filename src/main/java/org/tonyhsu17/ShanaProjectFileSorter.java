@@ -46,10 +46,13 @@ public class ShanaProjectFileSorter implements Logger {
             info("Url="+url + ", src="+src + ", des="+dest);
             if(!url.isEmpty() && !src.isEmpty() && !dest.isEmpty()) {
                 headless = new RunHeadlessMode(src, dest, url, logSize);
+            } else {
+                CommandLineArgs.printHelp("shana-proj-file-sorter.jar", Params.params);
+                System.exit(0);
             }
         } catch (ParseException | NumberFormatException e) {
-            CommandLineArgs.printHelp("shana-proj-file-sorter.jar", Params.params);
-            System.exit(0);
+            error(e);
+            System.exit(1);
         }
     }
 
