@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<Container version="2">
+    <Name>shana-proj-file-sorter</Name>
+    <Repository>tonyhsu17/shana-proj-file-sorter:stable</Repository>
+    <Registry>https://hub.docker.com/r/tonyhsu17/shana-proj-file-sorter/</Registry>
+    <Network>bridge</Network>
+    <MyIP/>
+    <Shell>sh</Shell>
+    <Privileged>false</Privileged>
+    <Support>https://github.com/tonyhsu17/ShanaProjectFileSorter</Support>
+    <Project>https://github.com/tonyhsu17/ShanaProjectFileSorter</Project>
+    <Overview>Download files through rss feed</Overview>
+    <Category>HomeAutomation</Category>
+    <WebUI/>
+    <TemplateURL>https://raw.githubusercontent.com/tonyhsu17/ShanaProjectFileSorter/refs/heads/dockerize/unraid/shana-proj-file-sorter.xml</TemplateURL>
+    <Icon>https://cdn.myanimelist.net/images/characters/5/68310.jpg</Icon>
+    <ExtraParams/>
+    <PostArgs/>
+    <CPUset/>
+    <DonateText/>
+    <DonateLink/>
+    <Requires/>
+    <Config Name="SP_URL" Target="SP_URL" Default="" Mode="" Description="Url to read from" Type="Variable" Display="always" Required="true" Mask="false"></Config>
+    <Config Name="SP_USE_CRON" Target="SP_USE_CRON" Default="true" Mode="" Description="Keep job running, set to false for single run" Type="Variable" Display="always" Required="false" Mask="false">true</Config>
+    <Config Name="SP_CRON_INTERVAL" Target="SP_CRON_INTERVAL" Default="600" Mode="" Description="Time in seconds" Type="Variable" Display="always" Required="false" Mask="false">600</Config>
+    <Config Name="Source" Target="/data/src" Default="/data/src" Mode="r" Description="path to mount for source, don't change container path" Type="Path" Display="always" Required="false" Mask="false"></Config>
+    <Config Name="Destination" Target="/data/des" Default="/data/des" Mode="rw" Description="path to mount for destination, don't change container path" Type="Path" Display="always" Required="false" Mask="false"></Config>
+    <Config Name="SP_SRC" Target="SP_SRC" Default="/data/src" Mode="" Description="destination within container" Type="Variable" Display="advanced" Required="false" Mask="false">/data</Config>
+    <Config Name="SP_DES" Target="SP_DES" Default="/data/des" Mode="" Description="destination within container" Type="Variable" Display="advanced" Required="false" Mask="false">/data</Config>
+    <Config Name="SP_LOG_SIZE" Target="SP_LOG_SIZE" Default="1000000" Mode="" Description="max history size" Type="Variable" Display="advanced" Required="false" Mask="false">/data</Config>
+
+</Container>

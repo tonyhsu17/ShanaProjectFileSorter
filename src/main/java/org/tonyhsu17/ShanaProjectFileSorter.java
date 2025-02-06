@@ -19,10 +19,10 @@ import java.util.Optional;
  */
 public class ShanaProjectFileSorter implements Logger {
     private RunHeadlessMode headless;
-    private int cronTime;
-    private boolean runOnce;
+    private int cronInterval;
+    private boolean hasCron;
     
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ParseException {
         new ShanaProjectFileSorter(args).run(); 
     }
 
@@ -34,51 +34,30 @@ public class ShanaProjectFileSorter implements Logger {
      * @throws IOException
      * @throws ParseException
      */
-    public ShanaProjectFileSorter(String[] args) throws IOException  {
-        runOnce = false;
-        cronTime = 0;
-        CommandLine cmd;
+    public ShanaProjectFileSorter(String[] args) throws IOException, ParseException {
         try {
-            cmd = CommandLineArgs.getCommandLine(Params.params, args);
-            if(hasOption(cmd, Params.S) &&
-               hasOption(cmd, Params.D) &&
-               hasOption(cmd, Params.U)) {
-                headless = new RunHeadlessMode(cmd.getOptionValue(Params.S.opt()),
-                    cmd.getOptionValue(Params.D.opt()),
-                    cmd.getOptionValue(Params.U.opt()),
-                    hasOption(cmd, Params.SIZE) ? Optional.ofNullable(Integer.valueOf(getOptionValue(cmd, Params.SIZE))).orElse(-1) : -1);
-            }
+            CommandLine cmd = CommandLineArgs.getCommandLine(Params.params, args);
+            String url = getOptionValue(cmd, Params.U, "SP_URL", "");
+            String src = getOptionValue(cmd, Params.S, "SP_SRC", "");
+            String dest = getOptionValue(cmd, Params.D, "SP_DES", "");
+            hasCron = !cmd.hasOption(Params.ONCE.opt()) || Boolean.parseBoolean(getOptionValue(cmd, Params.VERBOSE, "RSS_USE_CRON", "false"));
+            cronInterval = Integer.parseInt(getOptionValue(cmd, Params.T, "SP_CRON_INTERVAL", "10"));
+            int logSize = Integer.parseInt(getOptionValue(cmd, Params.SIZE, "SP_LOG_SIZE", "1000000"));
 
-            info("Running...");
-            if(cmd.hasOption(Params.ONCE.opt())) {
-                runOnce = true;
-            }
-            else if(cmd.hasOption(Params.T.opt())) {
-                cronTime = Integer.parseInt(cmd.getOptionValue(Params.T.opt())) * 1000 * 60;
-            }
-            else {
-                error("Failed to provide -t or -once");
-
-                System.exit(0);
+            if(!url.isEmpty() && !src.isEmpty() && !dest.isEmpty()) {
+                headless = new RunHeadlessMode(src, dest, url, logSize);
             }
         } catch (ParseException | NumberFormatException e) {
             CommandLineArgs.printHelp("ShanaProjectFileSorter.java", Params.params);
+            throw e;
         }
     }
 
-    public static boolean hasOption(CommandLine line, Parameter param) {
-        return line.hasOption(param.opt()) || line.hasOption(param.longOpt());
+    public static String getOptionValue(CommandLine cmd, Parameter param, String sysEnvKey, String defaultValue) {
+        return Optional.ofNullable(cmd.getOptionValue(param.opt())).
+            orElse(Optional.ofNullable(cmd.getOptionValue(param.longOpt()))
+                .orElse(Optional.ofNullable(System.getenv(sysEnvKey)).orElse(defaultValue)));
     }
-
-    public static String getOptionValue(CommandLine line, Parameter param) {
-        String value = line.getOptionValue(param.opt());
-        if(value != null) {
-            return value;
-        } else {
-            return line.getOptionValue(param.longOpt());
-        }
-    }
-
 
     /**
      * Starts the file sorting.
@@ -86,14 +65,14 @@ public class ShanaProjectFileSorter implements Logger {
      * @throws IOException
      */
     public void run() throws IOException {
-        if(runOnce) {
+        if(!hasCron) {
             headless.run();
         }
         else {
             while(true) {
                 headless.run();
                 try {
-                    Thread.sleep(cronTime);
+                    Thread.sleep(cronInterval);
                 }
                 catch (InterruptedException e) {
                     e.printStackTrace();
