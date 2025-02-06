@@ -13,87 +13,88 @@ import java.util.Optional;
 
 /**
  * Sorts anime files into Season Year/Series based on your followed list on ShanaProject.
- * 
- * @author Tony Hsu
  *
+ * @author Tony Hsu
  */
 public class ShanaProjectFileSorter implements Logger {
     private RunHeadlessMode headless;
-    private int cronTime;
-    private boolean runOnce;
-    
+    private int cronInterval;
+    private boolean hasCron;
+
     public static void main(String[] args) throws IOException {
-        new ShanaProjectFileSorter(args).run(); 
+        new ShanaProjectFileSorter(args).run();
     }
 
     /**
      * Sorts anime files into Season Year/Series based on your followed list on ShanaProject.
-     * 
+     *
      * @param args Arguments to pass in
      * @throws NumberFormatException
      * @throws IOException
      * @throws ParseException
      */
-    public ShanaProjectFileSorter(String[] args) throws IOException  {
-        runOnce = false;
-        cronTime = 0;
-        CommandLine cmd;
+    public ShanaProjectFileSorter(String[] args) throws IOException {
         try {
-            cmd = CommandLineArgs.getCommandLine(Params.params, args);
-            if(hasOption(cmd, Params.S) &&
-               hasOption(cmd, Params.D) &&
-               hasOption(cmd, Params.U)) {
-                headless = new RunHeadlessMode(cmd.getOptionValue(Params.S.opt()),
-                    cmd.getOptionValue(Params.D.opt()),
-                    cmd.getOptionValue(Params.U.opt()),
-                    hasOption(cmd, Params.SIZE) ? Optional.ofNullable(Integer.valueOf(getOptionValue(cmd, Params.SIZE))).orElse(-1) : -1);
-            }
-
-            info("Running...");
-            if(cmd.hasOption(Params.ONCE.opt())) {
-                runOnce = true;
-            }
-            else if(cmd.hasOption(Params.T.opt())) {
-                cronTime = Integer.parseInt(cmd.getOptionValue(Params.T.opt())) * 1000 * 60;
+            CommandLine cmd = CommandLineArgs.getCommandLine(Params.params, args);
+            String url = getOptionValue(cmd, Params.U, "SP_URL", "");
+            String src = getOptionValue(cmd, Params.S, "SP_SRC", "");
+            String dest = getOptionValue(cmd, Params.D, "SP_DES", "");
+            hasCron = !cmd.hasOption(Params.ONCE.opt()) || Boolean.parseBoolean(
+                Optional.ofNullable(System.getenv("SP_USE_CRON")).orElse("false"));
+            cronInterval = Integer.parseInt(getOptionValue(cmd, Params.T, "SP_CRON_INTERVAL", "10"));
+            int logSize = Integer.parseInt(getOptionValue(cmd, Params.SIZE, "SP_LOG_SIZE", "1000000"));
+            if(!url.isEmpty() && !src.isEmpty() && !dest.isEmpty()) {
+                headless = new RunHeadlessMode(src, dest, url, logSize);
             }
             else {
-                error("Failed to provide -t or -once");
-
+                CommandLineArgs.printHelp("shana-proj-file-sorter.jar", Params.params);
                 System.exit(0);
             }
-        } catch (ParseException | NumberFormatException e) {
-            CommandLineArgs.printHelp("ShanaProjectFileSorter.java", Params.params);
+        }
+        catch (ParseException | NumberFormatException e) {
+            error(e);
+            System.exit(1);
         }
     }
 
-    public static boolean hasOption(CommandLine line, Parameter param) {
-        return line.hasOption(param.opt()) || line.hasOption(param.longOpt());
-    }
-
-    public static String getOptionValue(CommandLine line, Parameter param) {
-        String value = line.getOptionValue(param.opt());
-        if(value != null) {
-            return value;
-        } else {
-            return line.getOptionValue(param.longOpt());
+    public String getOptionValue(CommandLine cmd, Parameter param, String sysEnvKey, String defaultValue) {
+        String val = null;
+        if(cmd.hasOption(param.opt())) {
+            info("Using arg[" + param.opt() + "]");
+            val = cmd.getOptionValue(param.opt());
         }
+        else if(cmd.hasOption(param.longOpt())) {
+            info("Using arg[" + param.longOpt() + "]");
+            val = cmd.getOptionValue(param.longOpt());
+        }
+        else if(System.getenv(sysEnvKey) != null) {
+            info("Using env[" + sysEnvKey + "]");
+            val = System.getenv(sysEnvKey);
+        }
+        else if(defaultValue != null) {
+            info("Using default value for arg[" + param.opt() + "]");
+            val = defaultValue;
+        }
+        else {
+            info("Nothing found for arg[" + param.opt() + "]");
+        }
+        return val;
     }
-
 
     /**
      * Starts the file sorting.
-     * 
+     *
      * @throws IOException
      */
     public void run() throws IOException {
-        if(runOnce) {
+        if(!hasCron) {
             headless.run();
         }
         else {
             while(true) {
                 headless.run();
                 try {
-                    Thread.sleep(cronTime);
+                    Thread.sleep(cronInterval);
                 }
                 catch (InterruptedException e) {
                     e.printStackTrace();

@@ -2,7 +2,8 @@
  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
  <modelVersion>4.0.0</modelVersion>
  <groupId>org.tonyhsu17</groupId>
- <artifactId>shana-project-file-sorter</artifactId>
+ <artifactId>shana-proj-file-sorter</artifactId>
+ <version>1.3</version>
  <properties>
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
  </properties>
@@ -33,7 +34,6 @@
    </plugin>
   </plugins>
  </build>
- <version>1.2</version>
 
 
  <dependencies>
