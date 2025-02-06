@@ -67,6 +67,8 @@ public class ShanaProjectFileSorter implements Logger {
         } else if(defaultValue != null) {
             info("Using default value");
             val = defaultValue;
+        } else {
+            info("Nothing found for arg[" + param.opt() + "]");
         }
         return val;
     }
