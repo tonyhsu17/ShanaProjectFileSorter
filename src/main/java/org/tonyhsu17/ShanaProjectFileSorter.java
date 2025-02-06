@@ -49,6 +49,7 @@ public class ShanaProjectFileSorter implements Logger {
             }
         } catch (ParseException | NumberFormatException e) {
             CommandLineArgs.printHelp("ShanaProjectFileSorter.java", Params.params);
+            System.exit(0);
         }
     }
 
