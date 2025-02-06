@@ -13,22 +13,21 @@ import java.util.Optional;
 
 /**
  * Sorts anime files into Season Year/Series based on your followed list on ShanaProject.
- * 
- * @author Tony Hsu
  *
+ * @author Tony Hsu
  */
 public class ShanaProjectFileSorter implements Logger {
     private RunHeadlessMode headless;
     private int cronInterval;
     private boolean hasCron;
-    
+
     public static void main(String[] args) throws IOException, ParseException {
-        new ShanaProjectFileSorter(args).run(); 
+        new ShanaProjectFileSorter(args).run();
     }
 
     /**
      * Sorts anime files into Season Year/Series based on your followed list on ShanaProject.
-     * 
+     *
      * @param args Arguments to pass in
      * @throws NumberFormatException
      * @throws IOException
@@ -44,14 +43,15 @@ public class ShanaProjectFileSorter implements Logger {
                 Optional.ofNullable(System.getenv("SP_USE_CRON")).orElse("false"));
             cronInterval = Integer.parseInt(getOptionValue(cmd, Params.T, "SP_CRON_INTERVAL", "10"));
             int logSize = Integer.parseInt(getOptionValue(cmd, Params.SIZE, "SP_LOG_SIZE", "1000000"));
-            info("Url="+url + ", src="+src + ", des="+dest);
             if(!url.isEmpty() && !src.isEmpty() && !dest.isEmpty()) {
                 headless = new RunHeadlessMode(src, dest, url, logSize);
-            } else {
+            }
+            else {
                 CommandLineArgs.printHelp("shana-proj-file-sorter.jar", Params.params);
                 System.exit(0);
             }
-        } catch (ParseException | NumberFormatException e) {
+        }
+        catch (ParseException | NumberFormatException e) {
             error(e);
             System.exit(1);
         }
@@ -59,19 +59,23 @@ public class ShanaProjectFileSorter implements Logger {
 
     public String getOptionValue(CommandLine cmd, Parameter param, String sysEnvKey, String defaultValue) {
         String val = null;
-        if((cmd != null && param != null) && cmd.hasOption(param.opt())) {
-            info("Using arg["+param.opt()+"]");
+        if(cmd.hasOption(param.opt())) {
+            info("Using arg[" + param.opt() + "]");
             val = cmd.getOptionValue(param.opt());
-        } else if((cmd != null && param != null) && cmd.hasOption(param.longOpt())) {
-            info("Using arg["+param.longOpt()+"]");
+        }
+        else if(cmd.hasOption(param.longOpt())) {
+            info("Using arg[" + param.longOpt() + "]");
             val = cmd.getOptionValue(param.longOpt());
-        } else if(System.getenv(sysEnvKey) != null) {
-            info("Using env["+sysEnvKey+"]");
+        }
+        else if(System.getenv(sysEnvKey) != null) {
+            info("Using env[" + sysEnvKey + "]");
             val = System.getenv(sysEnvKey);
-        } else if(defaultValue != null) {
-            info("Using default value");
+        }
+        else if(defaultValue != null) {
+            info("Using default value for arg[" + param.opt() + "]");
             val = defaultValue;
-        } else {
+        }
+        else {
             info("Nothing found for arg[" + param.opt() + "]");
         }
         return val;
@@ -79,7 +83,7 @@ public class ShanaProjectFileSorter implements Logger {
 
     /**
      * Starts the file sorting.
-     * 
+     *
      * @throws IOException
      */
     public void run() throws IOException {
