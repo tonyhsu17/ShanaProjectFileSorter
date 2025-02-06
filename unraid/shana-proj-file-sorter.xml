@@ -9,7 +9,7 @@
     <Privileged>false</Privileged>
     <Support>https://github.com/tonyhsu17/ShanaProjectFileSorter</Support>
     <Project>https://github.com/tonyhsu17/ShanaProjectFileSorter</Project>
-    <Overview>Download files through rss feed</Overview>
+    <Overview>Organize anime by seasons using ShanaProject</Overview>
     <Category>HomeAutomation</Category>
     <WebUI/>
     <TemplateURL>https://raw.githubusercontent.com/tonyhsu17/ShanaProjectFileSorter/refs/heads/master/unraid/shana-proj-file-sorter.xml</TemplateURL>
