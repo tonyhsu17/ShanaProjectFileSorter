@@ -21,7 +21,7 @@ public class ShanaProjectFileSorter implements Logger {
     private int cronInterval;
     private boolean hasCron;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         new ShanaProjectFileSorter(args).run();
     }
 
@@ -86,7 +86,7 @@ public class ShanaProjectFileSorter implements Logger {
      *
      * @throws IOException
      */
-    public void run() throws IOException {
+    public void run() throws IOException, InterruptedException {
         if(!hasCron) {
             headless.run();
         }

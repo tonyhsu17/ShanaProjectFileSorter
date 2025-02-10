@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -48,7 +49,7 @@ public class RunHeadlessMode implements Logger {
         initFolders();
     }
 
-    public void run() throws IOException {
+    public void run() throws IOException, InterruptedException {
         copy();
     }
 
@@ -90,10 +91,15 @@ public class RunHeadlessMode implements Logger {
      * 
      * @throws IOException
      */
-    private void copy() throws IOException {
+    private void copy() throws IOException, InterruptedException {
         File srcFolder = new File(src);
         for(File file : getAllFiles(srcFolder)) {
-            if(file.isDirectory() || history.isInHistory(file.getName(), file.lastModified())) {
+            if(file.length() == 0 || file.isDirectory() || history.isInHistory(file.getName(), file.lastModified())) {
+                continue;
+            }
+            long startLen = file.length();
+            Thread.sleep(Duration.ofSeconds(5));
+            if(file.length() != startLen) {
                 continue;
             }
             String desPath = getFolderForName(file.getName());
