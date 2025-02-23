@@ -10,14 +10,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
 
 
@@ -114,6 +111,12 @@ public class RunHeadlessMode implements Logger {
             try {
                 info("Copying: " + file.getPath() + " to: " + desPath);
                 Files.copy(Paths.get(file.getPath()), Paths.get(desPath), StandardCopyOption.REPLACE_EXISTING);
+                try {
+                    Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rw-rw-rw-");
+                    Files.setPosixFilePermissions(Paths.get(desPath), permissions);
+                } catch (IOException e) {
+                    System.err.println("Error setting POSIX permissions: " + e.getMessage());
+                }
                 history.add(file.getName(), file.lastModified()+"");
             }
             catch (Exception e) {
