@@ -74,6 +74,8 @@ public class RunHeadlessMode implements Logger {
                 if(!history.isInHistory(sanitizedName)) {
                     seriesFolder = new File(seriesPath);
                     seriesFolder.mkdirs();
+                    Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxrwxrwx");
+                    Files.setPosixFilePermissions(Paths.get(seriesPath), permissions);
                     history.add(sanitizedName);
                 }
                 seriesToFolder.put(sanitizedName.replaceAll(SPACING_REGEX, ""), seriesPath);
@@ -81,6 +83,8 @@ public class RunHeadlessMode implements Logger {
         }
         history.save();
         new File(unknownPath).mkdirs();
+        Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxrwxrwx");
+        Files.setPosixFilePermissions(Paths.get(unknownPath), permissions);
     }
 
     /**
@@ -112,7 +116,7 @@ public class RunHeadlessMode implements Logger {
                 info("Copying: " + file.getPath() + " to: " + desPath);
                 Files.copy(Paths.get(file.getPath()), Paths.get(desPath), StandardCopyOption.REPLACE_EXISTING);
                 try {
-                    Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rw-rw-rw-");
+                    Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxrwxrwx");
                     Files.setPosixFilePermissions(Paths.get(desPath), permissions);
                 } catch (IOException e) {
                     System.err.println("Error setting POSIX permissions: " + e.getMessage());
