@@ -171,7 +171,7 @@ public class RunHeadlessMode implements Logger {
                 }
             }
         }
-
+        debug("Dest " + returnVal + " found for " + fileName);
         return returnVal;
     }
 

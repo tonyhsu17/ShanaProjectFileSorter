@@ -15,8 +15,8 @@ public class Params {
     public static final Parameter U = new Parameter("u", "url", true, "https://www.shanaproject.com/USERNAME");
     public static final Parameter T = new Parameter("t", "time", true, "cron time in sec");
     public static final Parameter VERBOSE = new Parameter("v", "verbose", false, "output logging");
-    public static final Parameter ONCE = new Parameter("once", "once", false, "run single time");
+    public static final Parameter C = new Parameter("c", "cron", false, "activate cron");
     public static final Parameter SIZE = new Parameter("l", "logSize", true, "max history size");
 
-    public static Parameter[] params = {S, D, U, T, VERBOSE, ONCE, SIZE};
+    public static Parameter[] params = {S, D, U, T, VERBOSE, C, SIZE};
 }
