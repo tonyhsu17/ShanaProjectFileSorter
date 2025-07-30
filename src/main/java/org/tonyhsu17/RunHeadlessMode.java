@@ -76,6 +76,7 @@ public class RunHeadlessMode implements Logger {
                     seriesFolder.mkdirs();
                     Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxrwxrwx");
                     Files.setPosixFilePermissions(Paths.get(seriesPath), permissions);
+                    Files.setPosixFilePermissions(new File(seriesPath).getParentFile().toPath(), permissions);
                     history.add(sanitizedName);
                 }
                 seriesToFolder.put(sanitizedName.replaceAll(SPACING_REGEX, ""), seriesPath);
